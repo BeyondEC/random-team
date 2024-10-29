@@ -11,17 +11,6 @@
   <script src="js/jquery-latest.min.js"></script>
   
   <style>
-#values { position:relative;font-size:400%;text-align:center;margin: 0 auto;z-index:0; }
-.name { overflow:hidden;display:block; }
-#names { display:none;padding:5px; }
-#namesbox { min-height:400px;font-size:32px;color:#333;resize:none;border:1px solid #F39C12; }
-.extra { font-size:16px;margin-top:20px; }
-#result1 { background:#000;color:#fbe34b;padding:20px;z-index:10;margin-top:-150px; }
-body { background:#F1C40F url(img/Website.png); }
-#varnote { font-size:40px;text-align:center;padding:30px; }
-.copyright { font-size:11px;font-family:Tahoma;color:#9B59B6; }
-
-
     .full-head {
       width: 100%;
       background: url('img/header-bg.png') repeat-x center top;
@@ -117,6 +106,15 @@ body { background:#F1C40F url(img/Website.png); }
       display: none;
       margin-top: 20px;
     }
+
+    /* Styling for shuffle animation */
+    #shuffleBox {
+      font-size: 150%;
+      padding: 20px;
+      background-color: #FFEB99;
+      border-radius: 10px;
+      display: none; /* Hidden initially */
+    }
   </style>
 </head>
 
@@ -126,7 +124,7 @@ body { background:#F1C40F url(img/Website.png); }
     <div class="row">
       <div class="large-12 columns" style="text-align: center;">
         <h3>Random Team Picker</h3>
-        <label>How many team?
+        <label>How many teams?
           <input type="number" id="teamCount" placeholder="Masukkan jumlah tim" />
         </label>
         <label>Enter all names:
@@ -138,6 +136,11 @@ body { background:#F1C40F url(img/Website.png); }
     </div>
   </div>
 
+  <!-- Shuffle animation area -->
+  <div class="row">
+    <div class="large-12 columns" id="shuffleBox">Shuffling...</div>
+  </div>
+
   <div class="row">
     <div class="large-12 columns" id="values"></div>
   </div>
@@ -146,11 +149,12 @@ body { background:#F1C40F url(img/Website.png); }
     function reset() {
       $("#namesbox").val('');
       $("#values").html('');
-      $("#go").show();      // Tampilkan tombol GO
-      $("#restart").hide();  // Sembunyikan tombol restart
+      $("#go").show();      // Show the GO button
+      $("#restart").hide();  // Hide the restart button
+      $("#shuffleBox").hide(); // Hide shuffle animation box
     }
 
-    // Fungsi untuk memecah nama menjadi tim secara acak dengan animasi
+    // Function to shuffle and display teams
     function go() {
       var teamCount = parseInt($("#teamCount").val());
       var names = $("#namesbox").val().split("\n").filter(function (name) {
@@ -158,37 +162,40 @@ body { background:#F1C40F url(img/Website.png); }
       });
 
       if (teamCount <= 0 || names.length == 0) {
-        alert("Masukkan jumlah tim dan nama yang valid.");
+        alert("Please enter a valid number of teams and names.");
         return;
       }
 
-      // Acak nama sementara (untuk animasi)
-      var shuffledNames = [...names]; // Salin array nama
-      $("#values").html(''); // Kosongkan kotak nama
+      // Hide team display and show shuffle animation
+      $("#values").hide(); 
+      $("#shuffleBox").show(); // Show shuffle animation
 
+      // Shuffle names temporarily (for animation)
+      var shuffledNames = [...names]; // Copy names array
       var shuffleInterval = setInterval(function () {
         shuffledNames.sort(function () {
           return 0.5 - Math.random();
         });
-      }, 100); // Interval animasi setiap 100ms
+        $("#shuffleBox").text(shuffledNames.join(", "));
+      }, 100); // Shuffle every 100ms
 
-      // Setelah 3 detik, hentikan pengacakan dan tampilkan hasil final
+      // After 3 seconds, stop shuffle and display final result
       setTimeout(function () {
         clearInterval(shuffleInterval);
-        // Acak nama final
+        $("#shuffleBox").hide(); // Hide shuffle animation box
         names.sort(function () {
           return 0.5 - Math.random();
         });
         var teams = createTeams(names, teamCount);
         displayTeams(teams);
 
-        // Sembunyikan tombol GO dan tampilkan tombol Restart
+        // Hide the GO button and show the Restart button
         $("#go").hide();
         $("#restart").show();
-      }, 3000); // Durasi animasi selama 3 detik
+      }, 3000); // Shuffle for 3 seconds
     }
 
-    // Fungsi untuk membuat tim-tim dari nama
+    // Function to create teams
     function createTeams(names, teamCount) {
       var teams = [];
       for (var i = 0; i < teamCount; i++) {
@@ -202,9 +209,10 @@ body { background:#F1C40F url(img/Website.png); }
       return teams;
     }
 
-    // Fungsi untuk menampilkan tim-tim akhir
+    // Function to display teams
     function displayTeams(teams) {
-      $("#values").html(''); // Reset tampilan
+      $("#values").html(''); // Reset display
+      $("#values").show();   // Show the team boxes
 
       teams.forEach(function (team, index) {
         var teamDiv = $("<div class='team team-" + (index + 1) + "'></div>");
