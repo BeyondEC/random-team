@@ -12,35 +12,94 @@
   <script src="js/jquery-latest.min.js"></script>
 
   <style>
+    body {
+      background: #1058e8;
+      font-family: Tahoma,
+    }
+
     #values {
       position: relative;
-      font-size: 150%;
+      font-size: 120%;
       text-align: center;
       margin: 0 auto;
       z-index: 0;
+      padding-top: 20px;
     }
 
     #namesbox {
-      min-height: 200px;
-      font-size: 20px;
+      min-height: 150px;
+      font-size: 18px;
       color: #333;
       resize: none;
       border: 1px solid #F39C12;
     }
 
-    body {
-      background: #F1C40F;
-    }
-
     .team {
-      margin-top: 20px;
+      margin-top: 15px;
       padding: 10px;
-      border: 1px solid #333;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #333;
     }
 
     .team h4 {
       margin-bottom: 10px;
+      font-size: 18px;
     }
+
+    .team ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .team li {
+      padding: 5px 0;
+    }
+
+    .team-1 {
+      background-color: #FFDDC1; /* Pastel Peach */
+    }
+
+    .team-2 {
+      background-color: #FFCCF9; /* Pastel Pink */
+    }
+
+    .team-3 {
+      background-color: #D4A5A5; /* Pastel Mauve */
+    }
+
+    .team-4 {
+      background-color: #A5FFD6; /* Pastel Mint */
+    }
+
+    .team-5 {
+      background-color: #FFE6A7; /* Pastel Yellow */
+    }
+
+    .team-6 {
+      background-color: #A7C7E7; /* Pastel Blue */
+    }
+
+    .team-7 {
+      background-color: #C3F0CA; /* Pastel Green */
+    }
+
+    .team-8 {
+      background-color: #FFABAB; /* Pastel Red */
+    }
+
+    .team-9 {
+      background-color: #FFD3B6; /* Pastel Orange */
+    }
+
+    .team-10 {
+      background-color: #FFEB99; /* Pastel Light Yellow */
+    }
+
+    #go {
+      margin-top: 20px;
+    }
+
   </style>
 </head>
 
@@ -106,7 +165,7 @@
       $("#values").html(''); // Reset tampilan
 
       teams.forEach(function (team, index) {
-        var teamDiv = $("<div class='team'></div>");
+        var teamDiv = $("<div class='team team-" + (index + 1) + "'></div>");
         teamDiv.append("<h4>Team " + (index + 1) + "</h4>");
         teamDiv.append("<ul></ul>");
         team.forEach(function (name) {
