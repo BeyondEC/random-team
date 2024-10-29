@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<!--[if IE 8]> <html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<html lang="en">
 
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width" />
-  <title>Random Team Picker</title>
+  <title>Random Team Picker with Animation</title>
 
   <link rel="stylesheet" href="css/normalize.css" />
   <link rel="stylesheet" href="css/foundation.css" />
@@ -15,6 +14,14 @@
     body {
       background: #1058e8;
       font-family: Tahoma,
+    }
+
+    .full-head {
+      width: 100%;
+      background: url('img/header-bg.png') repeat-x center top;
+      border-bottom: 1px solid #D35400;
+      padding-top: 20px;
+      padding-bottom: 20px;
     }
 
     #values {
@@ -57,64 +64,65 @@
     }
 
     .team-1 {
-      background-color: #FFDDC1; /* Pastel Peach */
+      background-color: #FFDDC1;
     }
 
     .team-2 {
-      background-color: #FFCCF9; /* Pastel Pink */
+      background-color: #FFCCF9;
     }
 
     .team-3 {
-      background-color: #D4A5A5; /* Pastel Mauve */
+      background-color: #D4A5A5;
     }
 
     .team-4 {
-      background-color: #A5FFD6; /* Pastel Mint */
+      background-color: #A5FFD6;
     }
 
     .team-5 {
-      background-color: #FFE6A7; /* Pastel Yellow */
+      background-color: #FFE6A7;
     }
 
     .team-6 {
-      background-color: #A7C7E7; /* Pastel Blue */
+      background-color: #A7C7E7;
     }
 
     .team-7 {
-      background-color: #C3F0CA; /* Pastel Green */
+      background-color: #C3F0CA;
     }
 
     .team-8 {
-      background-color: #FFABAB; /* Pastel Red */
+      background-color: #FFABAB;
     }
 
     .team-9 {
-      background-color: #FFD3B6; /* Pastel Orange */
+      background-color: #FFD3B6;
     }
 
     .team-10 {
-      background-color: #FFEB99; /* Pastel Light Yellow */
+      background-color: #FFEB99;
     }
 
     #go {
       margin-top: 20px;
     }
-
   </style>
 </head>
 
 <body onload="reset();">
 
-  <div class="row">
-    <div class="large-12 columns" style="text-align: center; margin-top: 20px;">
-      <h3>Random Team Picker</h3>
-      <label>Jumlah Tim:
-        <input type="number" id="teamCount" placeholder="Masukkan jumlah tim" />
-      </label>
-      <label>Nama-nama (masukkan nama dengan setiap baris satu nama):
-        <textarea id="namesbox"></textarea>
-      </label>
-      <button class="success button" id="go" onclick="go();">GO!</button>
+  <div class="full-head">
+    <div class="row">
+      <div class="large-12 columns" style="text-align: center;">
+        <h3>Random Team Picker</h3>
+        <label>Jumlah Tim:
+          <input type="number" id="teamCount" placeholder="Masukkan jumlah tim" />
+        </label>
+        <label>Nama-nama (masukkan nama dengan setiap baris satu nama):
+          <textarea id="namesbox"></textarea>
+        </label>
+        <button class="success button" id="go" onclick="go();">GO!</button>
+      </div>
     </div>
   </div>
 
@@ -128,7 +136,7 @@
       $("#values").html('');
     }
 
-    // Fungsi untuk memecah nama menjadi tim secara acak
+    // Fungsi untuk memecah nama menjadi tim secara acak dengan animasi
     function go() {
       var teamCount = parseInt($("#teamCount").val());
       var names = $("#namesbox").val().split("\n").filter(function (name) {
@@ -140,27 +148,55 @@
         return;
       }
 
-      // Acak nama
-      names.sort(function () {
-        return 0.5 - Math.random();
-      });
+      // Acak nama sementara (untuk animasi)
+      var shuffledNames = [...names]; // Salin array nama
+      var shuffleInterval = setInterval(function () {
+        shuffledNames.sort(function () {
+          return 0.5 - Math.random();
+        });
+        displayShuffle(shuffledNames);
+      }, 100); // Interval animasi setiap 100ms
 
+      // Setelah 3 detik, hentikan pengacakan dan tampilkan hasil final
+      setTimeout(function () {
+        clearInterval(shuffleInterval);
+        // Acak nama final
+        names.sort(function () {
+          return 0.5 - Math.random();
+        });
+        var teams = createTeams(names, teamCount);
+        displayTeams(teams);
+      }, 3000); // Durasi animasi selama 3 detik
+    }
+
+    // Fungsi untuk menampilkan nama saat pengacakan
+    function displayShuffle(shuffledNames) {
+      $("#values").html(''); // Reset tampilan
+
+      var shuffleDiv = $("<div class='team'></div>");
+      shuffleDiv.append("<h4>Shuffling...</h4>");
+      shuffleDiv.append("<ul></ul>");
+      shuffledNames.forEach(function (name) {
+        shuffleDiv.find("ul").append("<li>" + name + "</li>");
+      });
+      $("#values").append(shuffleDiv);
+    }
+
+    // Fungsi untuk membuat tim-tim dari nama
+    function createTeams(names, teamCount) {
       var teams = [];
-      // Inisiasi tim
       for (var i = 0; i < teamCount; i++) {
         teams[i] = [];
       }
 
-      // Masukkan nama ke dalam tim secara bergiliran
       for (var i = 0; i < names.length; i++) {
         teams[i % teamCount].push(names[i]);
       }
 
-      // Tampilkan hasil
-      displayTeams(teams);
+      return teams;
     }
 
-    // Fungsi untuk menampilkan tim-tim
+    // Fungsi untuk menampilkan tim-tim akhir
     function displayTeams(teams) {
       $("#values").html(''); // Reset tampilan
 
